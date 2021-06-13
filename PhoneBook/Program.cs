@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PhoneBook
 {
@@ -6,6 +10,7 @@ namespace PhoneBook
     {
         static void Main(string[] args)
         {
+           
             Console.WriteLine("Welcome to my PhoneBook application!");
             Console.WriteLine("Please choose an option:");
             Console.WriteLine("1. Add Contact:");
@@ -25,13 +30,18 @@ namespace PhoneBook
                 switch (userInput)
                 {
                     case "1":
-                        Console.WriteLine("Please enter Contact Name:");
-                        var name = Console.ReadLine();
+                        Console.WriteLine("Please enter Contact First Name:");
+                        var firstName = Console.ReadLine();
+
+                        Console.WriteLine("Please enter Contact Last Name:");
+                        var lastName = Console.ReadLine();
+
                         Console.WriteLine("Please enter Contact Number:");
                         var number = Console.ReadLine();
 
-                        var newContact = new Contact(name, number);
-                        phoneBook.AddContact(newContact);
+                       var newContact = firstName + " " + lastName + " " + number;
+                       
+                        phoneBook.AddNewContact(newContact);
                         break;
 
                     case "2":
@@ -59,7 +69,7 @@ namespace PhoneBook
                         break;
 
                     case "6":
-                        phoneBook.DisplayAllContacts();
+                        phoneBook.DisplayAllContactsFromTextFile();
                         break;
 
                     case "x":

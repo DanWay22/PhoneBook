@@ -2,19 +2,34 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.IO;
 
 namespace PhoneBook
 {
     class PhoneBook
     {
-        private List<Contact> _contacts { get; set; } = new List<Contact>();
+        public const string dirPath = @"D:\Documents\Claim Academy\TestTextFiles\";
+        public const string fileName = "PhoneBook.txt";
+        public const string fullPath = dirPath + fileName;
+        public List<Contact> _contacts { get; set; } = new List<Contact>();
 
-        private void DisplayContactDetails(Contact contact)
+        public void AddContact(Contact contact)
         {
-            Console.WriteLine($"Contact: { contact.Name}, { contact.Number}");
+            _contacts.Add(contact);
         }
 
-        private void DisplayContactDetails(List<Contact> contacts)
+        public List<Contact> Contacts
+        {
+            get { return Contacts; }
+            set { this.Contacts = value; }
+        }
+
+        public void DisplayContactDetails(Contact contact)
+        {
+            Console.WriteLine($"Contacts: { contact.strLastName + ", " + contact.strFirstName + ": " + contact.strNumber}");
+        }
+
+        public void DisplayContactsDetails(List<Contact> contacts)
         {
             foreach (var contact in contacts)
             {
@@ -22,44 +37,62 @@ namespace PhoneBook
             }
         }
 
-        //public void DeleteContact(Contact contact)
-        //{
-        //    _contacts.(contact);
-        //}
 
-        public void AddContact(Contact contact)
+        public void DisplayContact(string number)
         {
-        _contacts.Add(contact);
-        }
-
-    public void DisplayContact(string number)
-    {
-        var contact = _contacts.FirstOrDefault(c=> c.Number == number);
+            var contact = _contacts.FirstOrDefault(c => c.strNumber == number);
             if (contact == null)
             {
-            Console.WriteLine("Contact not found!");
+                Console.WriteLine("Contact not found!");
             }
-            else 
+            else
             {
                 DisplayContactDetails(contact);
             }
-    }
-
-        public void DisplayAllContacts()
-        {
-                DisplayContactDetails(_contacts);
         }
 
-        public void EditContact(string searchEditContact)
+       public void DisplayAllContactsFromTextFile()
         {
-            var modifyContact = _contacts.Where(c => c.Name.Contains(searchEditContact)).ToList();
-            DisplayContactDetails(modifyContact);
+            if (!File.Exists(fullPath))
+            {
+                Console.WriteLine("There are contacts. Please add new contact.");
+            }
+            else
+            {
+                string [] lines = File.ReadAllLines(fullPath);
+                foreach (string ln in lines)
+                {
+                    Console.WriteLine(ln);
+                }
+            }
         }
-        
+
         public void DisplayMatchingContacts(string searchContact)
         {
-            var matchingContacts = _contacts.Where(c => c.Name.Contains(searchContact)).ToList();
-            DisplayContactDetails(matchingContacts);
+            var matchingContacts = _contacts.Where(c => c.strLastName.Contains(searchContact)).ToList();
+            DisplayContactsDetails(matchingContacts);
+        }
+
+        public void AddNewContact(string newContact)
+        {
+            try
+            {
+                if (!File.Exists(fullPath))
+                {
+                    File.WriteAllLines(fullPath, newContact.Split('\n'));
+                    Console.WriteLine(newContact);
+                }
+                else
+                {
+                    string strNewContact = newContact;
+                    File.AppendAllText(fullPath, strNewContact + "\n");
+                    Console.WriteLine(strNewContact);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("This is the try/catch Exception: " + e.Message);
+            }
         }
     }
 }
